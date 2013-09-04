@@ -4,44 +4,30 @@ public class Solution {
         // DO NOT write main() function
         if(s == null)
             return 0;
-        int min = s.length() - 1;
-        int i = 0;
-        for(;i <=min ; ++ i){
-           if(isOK(i, s))
-            break;
-        }
-        if(i < min)
-            min = i;
-        return min;
-    }
-    
-    private boolean isOK(int i, String s){
-        if(i >= s.length())
-            return false;
-        if(i == 0){
-        	if(isPalindrome(s))
-        		return true;
-        	else
-        		return false;
-        }
         int len = s.length();
-        int end = len - i;
-        for(int index = 1; index <= end; ++ index){
-            String substr = s.substring(0, index);
-            if(isPalindrome(substr) && isOK(i - 1, s.substring(index, len)))
-                return true;
+        int[] dp = new int[len];
+        boolean[][] isPalindrome = new boolean[len][len];
+        for(int i = 0; i < len; ++ i)
+            isPalindrome[i][i] = true;
+        for(int i = len - 2; i >= 0; -- i){
+            for(int j = i + 1; j < len; ++ j){
+                if(((j - i < 2) || isPalindrome[i + 1][j - 1]) && (s.charAt(i) == s.charAt(j))){
+                    isPalindrome[i][j] = true;
+                }
+            }
         }
-        return false;
-    }
-    
-    private boolean isPalindrome(String s){
-        String r_s = new StringBuffer(s).reverse().toString();
-        if(r_s.equals(s))
-            return true;
-        return false;
-    }
-    
-    public static void main(String[] args){
-    	System.out.println(new Solution().minCut("ab"));
+        for(int i = 0; i < len; ++ i)
+            dp[i] = len - i - 1;
+        for(int i = len - 2; i >= 0; --i){
+            if(isPalindrome[i][len - 1]){
+                dp[i] = 0;
+                continue;
+            }
+            for(int j = i + 1; j < len; ++ j){
+                if(isPalindrome[i][j - 1])
+                    dp[i] = Math.min(dp[i], dp[j] + 1);
+            }
+        }
+        return dp[0];
     }
 }
