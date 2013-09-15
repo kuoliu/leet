@@ -1,22 +1,36 @@
 public class Solution {
-    public int sqrt(int x) {
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
         // Start typing your Java solution below
         // DO NOT write main() function
-        if(x <= 1)
-            return x;
-        int left = 0;
-        int right = x;
-        int mid = 0;
-        while((right - left) > 1){
-            mid = left + (right - left)/2;
-            int temp = x/mid;
-            if(temp == mid)
-                return mid;
-            else if(temp > mid)
-                left = mid;
-            else
-                right = mid;
+        ListNode head = new ListNode(0);
+        ListNode iter = head;
+        int carry = 0;
+        while(l1 != null && l2 != null){
+            int num = l1.val + l2.val + carry;
+            carry = num/10;
+            num %= 10;
+            iter.next = new ListNode(num);
+            iter = iter.next;
+            l1 = l1.next;
+            l2 = l2.next;
         }
-        return left;
+        if(l2 != null){
+            l1 = l2;
+        }
+        while(l1 != null){
+            int num = l1.val + carry;
+            carry = num/10;
+            num %= 10;
+            iter.next = new ListNode(num);
+            iter = iter.next;
+            l1 = l1.next;
+        }
+        if(carry != 0){
+            iter.next = new ListNode(carry);
+            iter = iter.next;
+        }
+        iter.next = null;
+        iter = head.next;
+        return iter;
     }
 }
